@@ -141,6 +141,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 
 SITE_ID = 1
 
+ALLOWED_HOSTS = ['3.34.8.110']
 
 # 소셜 로그인 설정 끝
 
