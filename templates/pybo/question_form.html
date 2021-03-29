@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <h5 class="my-3 border-bottom pb-2">질문 등록</h5>
+        <form method="post" class="post-form my-3"> <!-- action 이 명시되어있지않으면 현재 페이지를 Post 로 불러옴(새로고침)-->
+            {% csrf_token %}
+            <!-- 오류 표시 start-->
+            {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for field in form %}
+                        {% if field.errors %}
+                            <strong>{{ field.label }}</strong>
+                            {{ field.errors }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="col-2">
+                <input type="radio" id='question' name="category" value="Q" checked> 질문
+                <input type="radio" id='free' name="category" value="F"> 자유
+                <input type="radio" id='class' name="category" value="C"> 강좌
+            </div>
+            <!-- 오류표시 end -->
+            <div class="form-group">
+                <label for="subject">제목</label>
+                <input type="text" class="form-control" name="subject" id="subject"
+                       value="{{ form.subject.value|default_if_none:'' }}">
+            </div>
+            <div class="form-group">
+                <label for="content">내용</label>
+                <textarea class="simplemde-box form-control" name="content" id="content"
+                          rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
+            </div>
+
+            <!-- form.as_p를 사용하면 빠르게 템플릿을 만들 수 있지만 HTML 코드가 자동으로 생성되므로 디자인 측면에서 많은 제한이 생기게 된다.-->
+            {#        {{ form.as_p }} <!-- 폼을 랜더링하는 옵션으로 form, form.as_p, form.as_table, form.as_ul 등이 있는데, 이 옵션은 각 필드를 어떤 HTML 태그로 Wrapping 할 것인가를 지정하는 것이다. -->#}
+            <button type="submit" class="btn btn-primary">저장하기</button>
+        </form>
+    </div>
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+    var simplemde = new SimpleMDE();
+    </script>
+{% endblock %}
