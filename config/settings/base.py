@@ -25,9 +25,6 @@ SECRET_KEY = '*xu(0a4x0zgs4y$jk7_fr@cdk@!y8ey!c3cg=^ju*(0e_mojfv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -142,7 +139,6 @@ ACCOUNT_EMAIL_REQUIRED = True
 
 SITE_ID = 1
 
-
 ALLOWED_HOSTS = ['3.34.8.110']
 
 # 소셜 로그인 설정 끝
@@ -156,3 +152,78 @@ EMAIL_HOST_USER = 'apikey'  # this is exactly the value 'apikey'
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+# 로깅
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'formatters': {
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[{server_time}] {message}',
+            'style': '{',
+        },
+        'standard': {
+            # asctime = 현재시간 , levelname - 로그의 레벨(debud, info, wrning, error, critical)
+            # name - 로거명
+            # message - 출력내용
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        },
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        """
+         level = 출력 레벨로 INFO 를 사용
+         filters - DEBUG =False 인 운영환경에 사용
+         class - 파일 핸들러로 RotatingFileHandler 사용, RotatingFileHandler는 파일 크기가 설정한크기보다 커지면 파일 뒤에 인덱스를 붙여서 백업한다. 
+         이 핸들러의 장점은 로그가 무한히 증가되더라도 일정 개수의 파일로 롤릴 되기 때문에 로그 파일이 너무 커져서 디스크가 꽉차는 위험을 방지할 수 있다.
+         filename - 로그 파일명은 ㅣogs 디렉터리에 mysite.log로 설정
+         maxBytes - 로그 파일 크기는 5MB로 설정
+         backupCount - 롤링되는 파일 개수를 의미한다. 총 5개의 로그 파일로 유지되도록 설정했다.
+         formatter - 포맷터는 standard를 사용
+        """
+        'file': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs/mysite.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5MB
+            'backupCount': 5,
+            'formatter': 'standard',
+
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'mail_admins', 'file'],
+            'level': 'INFO',
+        },
+        'django.server': {
+            'handlers': ['django.server'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    }
+}
