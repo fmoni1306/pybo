@@ -101,3 +101,10 @@ def profile(request, user_id):
     answer = Answer.objects.filter(author_id=user.id)  # 여러개를 받아와야 하기 떄문에 get 이 아닌 filter 를 사용
 
     return render(request, "common/profile.html", {"user": user, "question": question, "answer": answer})
+
+def page_not_found(request, exception):
+    """
+    404 Page not found
+    """
+
+    return render(request, 'common/404.html', {})
