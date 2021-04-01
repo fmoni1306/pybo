@@ -135,12 +135,13 @@ AUTHENTICATION_BACKENDS = (
     # e-mail로 로그인 하는 것과 같은 'allauth' 특정 인증 방법
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_REQUIRED = True
-
+SOCIALACCOUNT_AUTO_SIGNUP = False
 SITE_ID = 1
 
 ALLOWED_HOSTS = ['3.34.8.110']
-
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # 소셜 로그인 설정 끝
 
 LOGIN_REDIRECT_URL = '/'
